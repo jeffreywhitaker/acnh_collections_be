@@ -60,7 +60,6 @@ router.post('/login', (req, res) => {
   const email = req.body.email
   const password = req.body.password
 
-  console.log('login one')
   // Find user by email
   User.findOne({ email }).then((user) => {
     // Check if user exists
@@ -68,7 +67,6 @@ router.post('/login', (req, res) => {
       return res.status(404).json({ emailnotfound: 'Email not found' })
     }
 
-    console.log('login two')
     // Check password
     bcrypt.compare(password, user.password).then((isMatch) => {
       if (isMatch) {
