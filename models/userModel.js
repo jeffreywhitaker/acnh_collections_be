@@ -2,23 +2,23 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
-  // username: String,
   email: {
     type: String,
     required: true,
     unique: true,
   },
-  // firstName: String,
   password: {
     type: String,
     required: false,
   },
-  // userType: {
-  //   type: Number,
-  //   required: true,
-  //   default: 2,
-  // },
-  // appearInUserView: { type: Boolean, default: false },
+  shoppingCollection: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'ShoppingItem' },
+  ],
+  isAdmin: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
   createdAt: { type: Date, default: Date.now },
 })
 
