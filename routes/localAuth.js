@@ -2,15 +2,10 @@ const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcryptjs')
 
-// const isAuth = require('./authMiddleware').isAuth
-// const isAdmin = require('./authMiddleware').isAdmin
-
-// Load input validation
-// const validateRegisterInput = require('../validation/register-validation');
-// const validateLoginInput = require('../validation/login-validation');
-
-// Load User model
+// Load User model and input validation
 const User = require('../models/userModel')
+const validateRegisterInput = require('../validation/register-validation')
+const validateLoginInput = require('../validation/login-validation')
 
 // @route POST auth/register
 // @desc Register user and return cookie
@@ -42,7 +37,7 @@ router.post('/register', (req, res) => {
           newUser
             .save()
             .then((user) => {
-              return res.status(200) // send stuff back
+              return res.status(200).json("You're logged in") // send stuff back
             })
             .catch((err) => console.log(err))
         })
@@ -56,7 +51,7 @@ router.post('/register', (req, res) => {
 // @access Public
 router.post('/login', (req, res) => {
   // Form validation
-  //   const { errors, isValid } = validateLoginInput(req.body)
+  const { errors, isValid } = validateLoginInput(req.body)
 
   // Check validation
   if (!isValid) {
@@ -65,6 +60,7 @@ router.post('/login', (req, res) => {
   const email = req.body.email
   const password = req.body.password
 
+  console.log('login one')
   // Find user by email
   User.findOne({ email }).then((user) => {
     // Check if user exists
@@ -72,11 +68,12 @@ router.post('/login', (req, res) => {
       return res.status(404).json({ emailnotfound: 'Email not found' })
     }
 
+    console.log('login two')
     // Check password
     bcrypt.compare(password, user.password).then((isMatch) => {
       if (isMatch) {
         // User matched
-        return res.status(200) // send stuff back
+        return res.status(200).json("You're logged in!") // send stuff back
       } else {
         return res.status(400).json({ passwordincorrect: 'Password incorrect' })
       }

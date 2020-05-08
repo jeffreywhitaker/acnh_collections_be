@@ -4,25 +4,25 @@ const mongoose = require('mongoose')
 const User = mongoose.model('User')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
-const validPassword = require('../config/passwordUtils').validPassword
+// const validPassword = require('../config/passwordUtils').validPassword
 // const { BACKEND_ROOT_DOMAIN } = require('./envConfig')
 
 module.exports = (passport) => {
   passport.use(
-    new LocalStrategy(function (username, password, cb) {
-      User.findOne({ username: username })
+    new LocalStrategy(function (email, password, cb) {
+      User.findOne({ email: email })
         .then((user) => {
           if (!user) {
             return cb(null, false)
           }
 
-          const isValid = validPassword(password, user.hash, user.salt)
+          // const isValid = validPassword(password, user.hash, user.salt) // remove this
 
-          if (isValid) {
-            return cb(null, user)
-          } else {
-            return cb(null, false)
-          }
+          // if (isValid) {
+          return cb(null, user)
+          // } else {
+          //   return cb(null, false)
+          // }
         })
         .catch((err) => {
           cb(err)

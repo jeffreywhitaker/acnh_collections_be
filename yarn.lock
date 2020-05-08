@@ -1239,6 +1239,13 @@ configstore@^5.0.1:
     write-file-atomic "^3.0.0"
     xdg-basedir "^4.0.0"
 
+connect-mongo@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/connect-mongo/-/connect-mongo-3.2.0.tgz#20f776c7f2a9d8144fc76cfdcbf33edb05eb4d52"
+  integrity sha512-0Mx88079Z20CG909wCFlR3UxhMYGg6Ibn1hkIje1hwsqOLWtL9HJV+XD0DAjUvQScK6WqY/FA8tSVQM9rR64Rw==
+  dependencies:
+    mongodb "^3.1.0"
+
 content-disposition@0.5.3:
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/content-disposition/-/content-disposition-0.5.3.tgz#e130caf7e7279087c5616c2007d0485698984fbd"
@@ -3317,7 +3324,7 @@ mixin-deep@^1.2.0:
     for-in "^1.0.2"
     is-extendable "^1.0.1"
 
-mongodb@3.5.7:
+mongodb@3.5.7, mongodb@^3.1.0:
   version "3.5.7"
   resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.5.7.tgz#6dcfff3bdbf67a53263dcca1647c265eea1d065d"
   integrity sha512-lMtleRT+vIgY/JhhTn1nyGwnSMmJkJELp+4ZbrjctrnBxuLbj6rmLuJFz8W2xUzUqWmqoyVxJLYuC58ZKpcTYQ==
@@ -3693,13 +3700,6 @@ pascalcase@^0.1.1:
   resolved "https://registry.yarnpkg.com/pascalcase/-/pascalcase-0.1.1.tgz#b363e55e8006ca6fe21784d2db22bd15d7917f14"
   integrity sha1-s2PlXoAGym/iF4TS2yK9FdeRfxQ=
 
-passport-cookie@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/passport-cookie/-/passport-cookie-1.0.6.tgz#d0642696dccf415a57467c40c5c5f0f7f632eacd"
-  integrity sha512-WgTC2OYk1fGT4nj9U9qD1/nZ155Fmpjrogkfdpv2iEhGP5QZXy7Di/dJhdEo/6xGgUGbAg3y3TtUJrnyJ8w3Ew==
-  dependencies:
-    passport-strategy "^1.0.0"
-
 passport-google-oauth20@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/passport-google-oauth20/-/passport-google-oauth20-2.0.0.tgz#0d241b2d21ebd3dc7f2b60669ec4d587e3a674ef"
@@ -3725,7 +3725,7 @@ passport-oauth2@1.x.x:
     uid2 "0.0.x"
     utils-merge "1.x.x"
 
-passport-strategy@1.x.x, passport-strategy@^1.0.0:
+passport-strategy@1.x.x:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/passport-strategy/-/passport-strategy-1.0.0.tgz#b5539aa8fc225a3d1ad179476ddf236b440f52e4"
   integrity sha1-tVOaqPwiWj0a0XlHbd8ja0QPUuQ=

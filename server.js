@@ -6,9 +6,11 @@ const bodyParser = require('body-parser')
 const passport = require('passport')
 // const socialAuthRoutes = require('./routes/social-auth-routes')
 const localAuthRoutes = require('./routes/localAuth')
+const apiRouter = require('./routes/collectionsData')
 const rateLimit = require('express-rate-limit')
 const server = express()
 const session = require('express-session')
+const mongoose = require('mongoose')
 const MongoStore = require('connect-mongo')(session)
 require('dotenv').config()
 
@@ -24,9 +26,8 @@ server.use(
 server.use(bodyParser.json())
 
 // session middleware
-const DB = require('./config/dbConfig')
 const sessionStore = new MongoStore({
-  mongooseConnection: DB,
+  mongooseConnection: mongoose.connection,
   collection: 'sessions',
 })
 server.use(
@@ -59,7 +60,7 @@ const backendLimiter = rateLimit({
 })
 
 // routes
-server.use('/auth', authLimiter, [localAuthRoutes])
+server.use('/auth', localAuthRoutes)
 server.use('/api', backendLimiter, apiRouter)
 
 module.exports = server
