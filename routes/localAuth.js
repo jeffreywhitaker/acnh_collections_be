@@ -1,7 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcryptjs')
-// const jwt = require('jsonwebtoken')
+
+// const isAuth = require('./authMiddleware').isAuth
+// const isAdmin = require('./authMiddleware').isAdmin
 
 // Load input validation
 // const validateRegisterInput = require('../validation/register-validation');
@@ -10,8 +12,8 @@ const bcrypt = require('bcryptjs')
 // Load User model
 const User = require('../models/userModel')
 
-// @route POST api/users/register
-// @desc Register user and return JWT token
+// @route POST auth/register
+// @desc Register user and return cookie
 // @access Public
 router.post('/register', (req, res) => {
   // Form validation
@@ -27,7 +29,6 @@ router.post('/register', (req, res) => {
       return res.status(400).json({ email: 'Email already exists' })
     } else {
       const newUser = new User({
-        firstName: req.body.firstName,
         email: req.body.email,
         password: req.body.password,
       })
@@ -40,7 +41,9 @@ router.post('/register', (req, res) => {
           newUser.password = hash
           newUser
             .save()
-            .then((user) => sendToken(user, res))
+            .then((user) => {
+              return res.status(200) // send stuff back
+            })
             .catch((err) => console.log(err))
         })
       })
@@ -73,8 +76,7 @@ router.post('/login', (req, res) => {
     bcrypt.compare(password, user.password).then((isMatch) => {
       if (isMatch) {
         // User matched
-        // Create JWT Payload
-        sendToken(user, res)
+        return res.status(200) // send stuff back
       } else {
         return res.status(400).json({ passwordincorrect: 'Password incorrect' })
       }

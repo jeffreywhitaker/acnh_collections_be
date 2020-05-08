@@ -3,30 +3,42 @@
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
 const passport = require('passport')
-const { BACKEND_ROOT_DOMAIN } = require('./envConfig')
-
-passport.serializeUser(function (user, done) {
-  done(null, user)
-})
-passport.deserializeUser(function (user, done) {
-  done(null, user)
-})
-
-// opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken()
-// opts.secretOrKey = process.env.JWT_TOKEN_SECRET
+const LocalStrategy = require('passport-local').Strategy
+const validPassword = require('../config/passwordUtils').validPassword
+// const { BACKEND_ROOT_DOMAIN } = require('./envConfig')
 
 module.exports = (passport) => {
   passport.use(
-    new CookieStrategy((token, done) => {
-      User.findByToken({ token: token }, function (err, user) {
-        if (err) {
-          return done(err)
-        }
-        if (!user) {
-          return done(null, false)
-        }
-        return done(null, user)
-      })
+    new LocalStrategy(function (username, password, cb) {
+      User.findOne({ username: username })
+        .then((user) => {
+          if (!user) {
+            return cb(null, false)
+          }
+
+          const isValid = validPassword(password, user.hash, user.salt)
+
+          if (isValid) {
+            return cb(null, user)
+          } else {
+            return cb(null, false)
+          }
+        })
+        .catch((err) => {
+          cb(err)
+        })
     }),
   )
+
+  passport.serializeUser((user, done) => {
+    done(null, user.id)
+  })
+
+  passport.deserializeUser((userId, done) => {
+    User.findById(userId)
+      .then((user) => {
+        done(null, user)
+      })
+      .catch((err) => done(err))
+  })
 }
