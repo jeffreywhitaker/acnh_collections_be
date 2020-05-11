@@ -4,9 +4,9 @@ const cors = require('cors')
 const helmet = require('helmet')
 const bodyParser = require('body-parser')
 const passport = require('passport')
-// const socialAuthRoutes = require('./routes/social-auth-routes')
+// const socialAuthRoutes = require('./routes/socialAuth')
 const localAuthRoutes = require('./routes/localAuth')
-const apiRouter = require('./routes/collectionsData')
+const apiRoute = require('./routes/collectionsData')
 const rateLimit = require('express-rate-limit')
 const server = express()
 const session = require('express-session')
@@ -60,7 +60,7 @@ const backendLimiter = rateLimit({
 })
 
 // routes
-server.use('/auth', localAuthRoutes)
-server.use('/api', backendLimiter, apiRouter)
+server.use('/auth', authLimiter, [localAuthRoutes])
+server.use('/api', backendLimiter, apiRoute)
 
 module.exports = server
