@@ -11,15 +11,45 @@ const validateLoginInput = require('../validation/login-validation')
 // @route POST auth/register
 // @desc Register user and return cookie
 // @access Public
-router.post('/register', (req, res) => {
-  // Form validation
-  const { errors, isValid } = validateRegisterInput(req.body)
+router.post(
+  '/register',
+  signupValidation,
+  passport.authenticate('local'),
+  (req, res) => {
+    return res.status(200).json('User created and logged in!') // send stuff back
+  },
+)
 
-  // Check validation
+// @route POST auth/login
+// @desc Login user and return cookie
+// @access Public
+router.post(
+  '/login',
+  loginValidation,
+  passport.authenticate('local'),
+  (req, res) => {
+    return res.status(200).json("You're logged in!") // send stuff back
+  },
+)
+
+// helper functions
+function loginValidation(req, res, next) {
+  // check for form validation
+  const { errors, isValid } = validateLoginInput(req.body)
+  if (!isValid) {
+    return res.status(400).json(errors)
+  }
+  return next()
+}
+
+function signupValidation(req, res, next) {
+  // check for form validation
+  const { errors, isValid } = validateRegisterInput(req.body)
   if (!isValid) {
     return res.status(400).json(errors)
   }
 
+  // check if user exists
   User.findOne({ email: req.body.email }).then((user) => {
     if (user) {
       return res.status(400).json({ email: 'Email already exists' })
@@ -38,51 +68,13 @@ router.post('/register', (req, res) => {
           newUser
             .save()
             .then((user) => {
-              return res.status(200).json("You're logged in") // send stuff back
+              return next()
             })
             .catch((err) => console.log(err))
         })
       })
     }
   })
-})
-
-// @route POST auth/login
-// @desc Login user and return cookie
-// @access Public
-router.post('/login', passport.authenticate('local'), (req, res) => {
-  return res.status(200).json("You're logged in!") // send stuff back
-})
-
-/**
- * (req, res) => {
-  // Form validation
-  const { errors, isValid } = validateLoginInput(req.body)
-
-  // Check validation
-  if (!isValid) {
-    return res.status(400).json(errors)
-  }
-  const email = req.body.email
-  const password = req.body.password
-
-  // Find user by email
-  User.findOne({ email }).then((user) => {
-    // Check if user exists
-    if (!user) {
-      return res.status(404).json({ emailnotfound: 'Email not found' })
-    }
-
-    // Check password
-    bcrypt.compare(password, user.password).then((isMatch) => {
-      if (isMatch) {
-        // User matched
-        return res.status(200).json("You're logged in!") // send stuff back
-      } else {
-        return res.status(400).json({ passwordincorrect: 'Password incorrect' })
-      }
-    })
-  })
- */
+}
 
 module.exports = router
