@@ -3,42 +3,49 @@
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
 const passport = require('passport')
+const bcrypt = require('bcryptjs')
 const LocalStrategy = require('passport-local').Strategy
 // const validPassword = require('../config/passwordUtils').validPassword
 // const { BACKEND_ROOT_DOMAIN } = require('./envConfig')
 
 module.exports = (passport) => {
   passport.use(
-    new LocalStrategy(function (email, password, cb) {
-      User.findOne({ email: email })
-        .then((user) => {
+    new LocalStrategy(
+      {
+        usernameField: 'email',
+        passwordField: 'password',
+      },
+      (email, password, cb) => {
+        User.findOne({ email }).then((user) => {
+          // Check if user exists
           if (!user) {
             return cb(null, false)
           }
 
-          // const isValid = validPassword(password, user.hash, user.salt) // remove this
-
-          // if (isValid) {
-          return cb(null, user)
-          // } else {
-          //   return cb(null, false)
-          // }
+          // Check password
+          bcrypt.compare(password, user.password).then((isMatch) => {
+            if (isMatch) {
+              // User matched
+              return cb(null, user)
+            } else {
+              return cb(null, false)
+            }
+          })
         })
-        .catch((err) => {
-          cb(err)
-        })
-    }),
+      },
+    ),
   )
 
   passport.serializeUser((user, done) => {
+    // console.log('cerealizing!');
     done(null, user.id)
   })
 
-  passport.deserializeUser((userId, done) => {
-    User.findById(userId)
-      .then((user) => {
-        done(null, user)
-      })
-      .catch((err) => done(err))
+  passport.deserializeUser(function (id, done) {
+    // console.log('deserializing!');
+    User.findById(id, (err, user) => {
+      // console.log(user);
+      done(err, user)
+    })
   })
 }

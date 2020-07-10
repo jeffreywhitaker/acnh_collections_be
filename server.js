@@ -43,8 +43,8 @@ server.use(
 )
 
 // passport middleware
-server.use(passport.initialize())
 require('./config/passportConfig.js')(passport)
+server.use(passport.initialize())
 server.use(passport.session())
 
 // rate limits for the routes

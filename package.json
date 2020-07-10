@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/jeffreywhitaker/acnh_collections_be",
   "engines": {
-    "node": "12.13.1"
+    "node": "12.18.1"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

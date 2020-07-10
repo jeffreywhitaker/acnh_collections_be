@@ -43,18 +43,20 @@ router.get('/shoppingitems', (req, res) => {
 // @route GET auth/userdata
 // @desc Get user profile data
 // @access Private
-router.get(
-  '/userdata',
-  passport.authenticate('local', { session: true }),
-  function (req, res) {
-    User.findOne({ email: req.body.email })
-      .populate('shoppingCollection')
-      .exec((err, collection) => {
-        if (err) throw err
-        console.log('/userdata hit')
-        res.status(200).json(collection)
-      })
-  },
-)
+router.get('/userdata', isLoggedIn, function (req, res) {
+  User.findOne({ email: req.body.email })
+    .populate('shoppingCollection')
+    .exec((err, collection) => {
+      if (err) throw err
+      res.status(200).json(collection)
+    })
+})
+
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+  res.status(401).json('You must be logged in to access this.')
+}
 
 module.exports = router

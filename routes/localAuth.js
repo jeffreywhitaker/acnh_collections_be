@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcryptjs')
+const passport = require('passport')
 
 // Load User model and input validation
 const User = require('../models/userModel')
@@ -49,7 +50,12 @@ router.post('/register', (req, res) => {
 // @route POST auth/login
 // @desc Login user and return cookie
 // @access Public
-router.post('/login', (req, res) => {
+router.post('/login', passport.authenticate('local'), (req, res) => {
+  return res.status(200).json("You're logged in!") // send stuff back
+})
+
+/**
+ * (req, res) => {
   // Form validation
   const { errors, isValid } = validateLoginInput(req.body)
 
@@ -77,6 +83,6 @@ router.post('/login', (req, res) => {
       }
     })
   })
-})
+ */
 
 module.exports = router
